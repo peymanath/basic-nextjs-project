@@ -1,0 +1,8 @@
+name: Deploy To Server
+on:
+  push:
+    branches:
+      - production
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
