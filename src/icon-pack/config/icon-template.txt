@@ -1,0 +1,10 @@
+import BaseIcon from "@/icon-pack/config/base-icon";
+import type { SvgIconType } from "@/icon-pack/config/icon.types";
+
+export default function SvgIcon(props: SvgIconType) {
+  return (
+    <BaseIcon {...props}>
+      <%= contents %>
+    </BaseIcon>
+  );
+}

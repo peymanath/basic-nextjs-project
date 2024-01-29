@@ -3,8 +3,6 @@ import { match as matchLocale } from '@formatjs/intl-localematcher';
 import Negotiator from 'negotiator';
 import { NextResponse, type NextRequest } from 'next/server';
 
-const PUBLIC_FILE = /\.(.*)$/;
-
 function getLocale(): string | undefined {
   const lang = i18n.locales.join(',');
 
@@ -17,29 +15,18 @@ function getLocale(): string | undefined {
   return locale;
 }
 
-export const DictionaryMiddlewareConfig = (request: NextRequest) => {
-  const { pathname } = request.nextUrl;
-
-  const pathnameIsMissingLocale = i18n.locales.every(
-    locale => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
-  );
-
-  if (pathname.startsWith('/_next') || pathname.includes('/api/') || PUBLIC_FILE.test(pathname)) {
-    return;
-  }
-
+export const DictionaryMiddlewareConfig = (request: NextRequest, pathname: string) => {
   // Redirect if there is no locale
-  if (pathnameIsMissingLocale) {
-    const locale = getLocale();
 
-    if (locale === i18n.defaultLocale) {
-      return NextResponse.rewrite(
-        new URL(`/${locale}${pathname.startsWith('/') ? '' : '/'}${pathname}`, request.url)
-      );
-    }
+  const locale = getLocale();
 
-    return NextResponse.redirect(
+  if (locale === i18n.defaultLocale) {
+    return NextResponse.rewrite(
       new URL(`/${locale}${pathname.startsWith('/') ? '' : '/'}${pathname}`, request.url)
     );
   }
+
+  return NextResponse.redirect(
+    new URL(`/${locale}${pathname.startsWith('/') ? '' : '/'}${pathname}`, request.url)
+  );
 };
